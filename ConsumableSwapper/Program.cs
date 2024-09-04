@@ -110,9 +110,8 @@ public static class Program
         state.LinkCache.Resolve<IIngestibleGetter>(new FormKey(ModKey.FromNameAndExtension(apothecaryEsp), 0x162EDD))
       },
     };
-
-
-    var stream = File.CreateText("ConsumableSwapper_SWAP.ini");
+    
+    var stream = File.CreateText($"{state.DataFolderPath}\\ConsumableSwapper_SWAP.ini");
     stream.WriteLine("[Forms]");
     
       
