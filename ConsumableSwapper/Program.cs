@@ -111,6 +111,46 @@ public static class Program
       },
     };
 
+
+    var stream = File.CreateText("ConsumableSwapper_SWAP.ini");
+    stream.WriteLine("[Forms]");
+    
+      
+    foreach (var listIngestible in ingestibles)
+    {
+      var firstIngestible = state.PatchMod.Ingestibles.GetOrAddAsOverride(listIngestible[0]);
+      for (var i = 0; i < listIngestible.Length; i++)
+      {
+        
+        if (i == 0 || firstIngestible == null)
+        {
+          continue;
+        }
+        
+
+        var modifiedIngestible = state.PatchMod.Ingestibles.GetOrAddAsOverride(listIngestible[i]);
+        SynthesisLog(
+          $"Copy Stats and write to BOS config: {modifiedIngestible.EditorID} | {firstIngestible.EditorID}");
+        stream.WriteLine($"{modifiedIngestible.EditorID}|{firstIngestible.EditorID}");
+        
+        modifiedIngestible.Name = firstIngestible.Name;
+        modifiedIngestible.Weight = firstIngestible.Weight;
+        modifiedIngestible.Keywords = firstIngestible.Keywords;
+        modifiedIngestible.Value = firstIngestible.Value;
+        modifiedIngestible.Effects.Clear();
+        
+        foreach (var effect in firstIngestible.Effects)
+        {
+          modifiedIngestible.Effects.Add(effect);
+        }
+        
+        
+      }
+    }
+    
+    stream.Flush();
+    stream.Close();
+
     foreach (var leveledList in state.LoadOrder.PriorityOrder.WinningOverrides<ILeveledItemGetter>())
     {
       if (leveledList.IsDeleted || leveledList.Entries is not {Count: > 0})
