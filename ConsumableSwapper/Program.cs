@@ -604,17 +604,17 @@ public static class Program
     stream.Flush();
     stream.Close();
       
-    SynthesisLog("Write Powers", true);
-
-    foreach (var spell in state.LoadOrder.PriorityOrder.WinningOverrides<ISpellGetter>())
-    {
-      if (spell.IsDeleted || spell.Type is not (SpellType.Power or SpellType.LesserPower))
-      {
-        continue;
-      }
-      SynthesisLog($"Add power: {spell.EditorID}");
-      state.PatchMod.Spells.GetOrAddAsOverride(spell);
-    }
+    // SynthesisLog("Write Powers", true);
+// 
+    // foreach (var spell in state.LoadOrder.PriorityOrder.WinningOverrides<ISpellGetter>())
+    // {
+    //   if (spell.IsDeleted || spell.Type is not (SpellType.Power or SpellType.LesserPower))
+    //   {
+    //     continue;
+    //   }
+    //   SynthesisLog($"Add power: {spell.EditorID}");
+    //   state.PatchMod.Spells.GetOrAddAsOverride(spell);
+    // }
 
     SynthesisLog(
       "Start patch LeveledList", true);
