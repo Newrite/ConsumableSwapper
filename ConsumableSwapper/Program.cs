@@ -663,7 +663,7 @@ public static class Program
             SynthesisLog(
               $"Swap forms: {npc.Items[j].Item?.Item.FormKey} | {listIngestible[i].EditorID} to {listIngestible[0].EditorID}");
             var modifiedNpc = state.PatchMod.Npcs.GetOrAddAsOverride(npc);
-            modifiedNpc.Items?[j].Item.Item.SetTo(listIngestible[i]);
+            modifiedNpc.Items?[j].Item.Item.SetTo(listIngestible[0]);
           }
         }
       }
@@ -695,7 +695,7 @@ public static class Program
             SynthesisLog(
               $"Swap forms: {formList.Items[j].FormKey} | {listIngestible[i].EditorID} to {listIngestible[0].EditorID}");
             var modifiedFormList = state.PatchMod.FormLists.GetOrAddAsOverride(formList);
-            modifiedFormList.Items[j].AsSetter().SetTo(listIngestible[i]);
+            modifiedFormList.Items[j].AsSetter().SetTo(listIngestible[0]);
           }
         }
       }
@@ -727,7 +727,7 @@ public static class Program
             SynthesisLog(
               $"Swap forms: {container.Items[j].Item?.Item.FormKey} | {listIngestible[i].EditorID} to {listIngestible[0].EditorID}");
             var modifiedContainer = state.PatchMod.Containers.GetOrAddAsOverride(container);
-            modifiedContainer.Items?[j].Item.Item.SetTo(listIngestible[i]);
+            modifiedContainer.Items?[j].Item.Item.SetTo(listIngestible[0]);
           }
         }
       }
