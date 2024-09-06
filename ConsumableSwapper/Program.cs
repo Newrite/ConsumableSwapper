@@ -610,9 +610,10 @@ public static class Program
     {
       if (spell.IsDeleted || spell.Type is not (SpellType.Power or SpellType.LesserPower))
       {
-        SynthesisLog($"Add power: {spell.EditorID}");
-        state.PatchMod.Spells.GetOrAddAsOverride(spell);
+        continue;
       }
+      SynthesisLog($"Add power: {spell.EditorID}");
+      state.PatchMod.Spells.GetOrAddAsOverride(spell);
     }
 
     SynthesisLog(
