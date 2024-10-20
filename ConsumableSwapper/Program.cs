@@ -607,7 +607,7 @@ public static class Program
 
     stream.Flush();
     stream.Close();
-      
+
     // SynthesisLog("Write Powers", true);
 // 
     // foreach (var spell in state.LoadOrder.PriorityOrder.WinningOverrides<ISpellGetter>())
@@ -652,7 +652,7 @@ public static class Program
         }
       }
     }
-    
+
     SynthesisLog(
       "Start patch NPC", true);
 
@@ -684,7 +684,7 @@ public static class Program
         }
       }
     }
-    
+
     SynthesisLog(
       "Start patch FormList", true);
 
@@ -716,7 +716,7 @@ public static class Program
         }
       }
     }
-    
+
     SynthesisLog(
       "Start patch Containers", true);
 
@@ -751,7 +751,6 @@ public static class Program
 
     if (kiEnergyDurationKeyword != null)
     {
-
       foreach (var magicEffectGetter in state.LoadOrder.PriorityOrder.WinningOverrides<IMagicEffectGetter>())
       {
         if (magicEffectGetter == null || magicEffectGetter.IsDeleted ||
@@ -772,34 +771,32 @@ public static class Program
           modifiedEffect.Archetype = new MagicEffectArchetype(MagicEffectArchetype.TypeEnum.Script);
           modifiedEffect.Flags.SetFlag(MagicEffect.Flag.Detrimental, true);
         }
-        
       }
 
       var loadOrderLinkCache = state.LoadOrder.ToImmutableLinkCache();
-      
+
       foreach (var ingestibleGetter in state.LoadOrder.PriorityOrder.WinningOverrides<IIngestibleGetter>())
       {
         if (ingestibleGetter == null || ingestibleGetter.IsDeleted || ingestibleGetter.Effects.Count <= 0)
         {
-          continue;   
+          continue;
         }
 
         for (int i = 0; i < ingestibleGetter.Effects.Count; i++)
         {
-
           var hasKeyword = ingestibleGetter?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
             ?.HasKeyword(kiEnergyDurationKeyword);
-          
+
           if (hasKeyword.HasValue && hasKeyword.Value)
           {
-            SynthesisLog(
-              $"Ingestible Ki Duration Patch: {ingestibleGetter?.EditorID}");
             var modifiedIngestible = state.PatchMod.Ingestibles.GetOrAddAsOverride(ingestibleGetter);
-            var magnitude = modifiedIngestible.Effects[i].Data!.Magnitude;
-            modifiedIngestible.Effects[i].Data!.Magnitude = magnitude / 10.0f;
+            var magnitude = modifiedIngestible.Effects[i].Data!.Magnitude / 10.0f;
+            SynthesisLog(
+              $"Ingestible Ki Duration Patch: {ingestibleGetter?.EditorID} new magnitude: {magnitude}");
+            modifiedIngestible.Effects[i].Data!.Magnitude = magnitude;
           }
         }
-        
+
         foreach (var ench in state.LoadOrder.PriorityOrder.WinningOverrides<IObjectEffectGetter>())
         {
           if (ench == null || ench.IsDeleted || ench.Effects.Count <= 0)
@@ -809,21 +806,20 @@ public static class Program
 
           for (int i = 0; i < ench.Effects.Count; i++)
           {
-
             var hasKeyword = ench?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
               ?.HasKeyword(kiEnergyDurationKeyword);
-          
+
             if (hasKeyword.HasValue && hasKeyword.Value)
             {
-              SynthesisLog(
-                $"Ench Ki Duration Patch: {ench?.EditorID}");
               var modifiedEnch = state.PatchMod.ObjectEffects.GetOrAddAsOverride(ench);
-              var magnitude = modifiedEnch.Effects[i].Data!.Magnitude;
-              modifiedEnch.Effects[i].Data!.Magnitude = magnitude / 10.0f;
+              var magnitude = modifiedEnch.Effects[i].Data!.Magnitude / 10.0f;
+              SynthesisLog(
+                $"Ench Ki Duration Patch: {ench?.EditorID} new magnitude: {magnitude}");
+              modifiedEnch.Effects[i].Data!.Magnitude = magnitude;
             }
           }
         }
-        
+
         foreach (var spell in state.LoadOrder.PriorityOrder.WinningOverrides<ISpellGetter>())
         {
           if (spell == null || spell.IsDeleted || spell.Effects.Count <= 0)
@@ -833,17 +829,16 @@ public static class Program
 
           for (int i = 0; i < spell.Effects.Count; i++)
           {
-
             var hasKeyword = spell?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
               ?.HasKeyword(kiEnergyDurationKeyword);
-          
+
             if (hasKeyword.HasValue && hasKeyword.Value)
             {
-              SynthesisLog(
-                $"Spell Ki Duration Patch: {spell?.EditorID}");
               var modifiedSpell = state.PatchMod.Spells.GetOrAddAsOverride(spell);
-              var magnitude = modifiedSpell.Effects[i].Data!.Magnitude;
-              modifiedSpell.Effects[i].Data!.Magnitude = magnitude / 10.0f;
+              var magnitude = modifiedSpell.Effects[i].Data!.Magnitude / 10.0f;
+              SynthesisLog(
+                $"Spell Ki Duration Patch: {spell?.EditorID} new magnitude: {magnitude}");
+              modifiedSpell.Effects[i].Data!.Magnitude = magnitude;
             }
           }
         }
