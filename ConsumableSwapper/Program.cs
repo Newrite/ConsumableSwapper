@@ -56,6 +56,9 @@ public static class Program
 
     var kiEnergyDurationKeyword =
       state.LinkCache.Resolve<IKeywordGetter>(new FormKey(ModKey.FromNameAndExtension(reSimonrimEsp), 0x951));
+    
+    var excludePatcherKeyword =
+      state.LinkCache.Resolve<IKeywordGetter>(new FormKey(ModKey.FromNameAndExtension(reSimonrimEsp), 0x9FA));
 
     var loadOrderLinkCache = state.LoadOrder.ToImmutableLinkCache();
 
@@ -588,7 +591,7 @@ public static class Program
           continue;
         }
 
-        if (magicEffectGetter.Archetype.ActorValue == ActorValue.CarryWeight)
+        if (magicEffectGetter.Archetype.ActorValue == ActorValue.CarryWeight && !magicEffectGetter.HasKeyword(excludePatcherKeyword))
         {
           SynthesisLog(
             $"Patch CarryWeight magic effect Ki Duration: {magicEffectGetter?.EditorID}");
