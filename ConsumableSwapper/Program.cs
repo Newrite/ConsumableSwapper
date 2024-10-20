@@ -751,6 +751,29 @@ public static class Program
 
     if (kiEnergyDurationKeyword != null)
     {
+
+      foreach (var magicEffectGetter in state.LoadOrder.PriorityOrder.WinningOverrides<IMagicEffectGetter>())
+      {
+        if (magicEffectGetter == null || magicEffectGetter.IsDeleted ||
+            (magicEffectGetter.Archetype.Type != MagicEffectArchetype.TypeEnum.ValueModifier &&
+             magicEffectGetter.Archetype.Type != MagicEffectArchetype.TypeEnum.PeakValueModifier))
+        {
+          continue;
+        }
+
+        if (magicEffectGetter.Archetype.ActorValue == ActorValue.CarryWeight)
+        {
+          SynthesisLog(
+            $"Patch CarryWeight magic effect Ki Duration: {magicEffectGetter?.EditorID}");
+          var modifiedEffect = state.PatchMod.MagicEffects.GetOrAddAsOverride(magicEffectGetter);
+          modifiedEffect.BaseCost *= 2.0f;
+          modifiedEffect.Keywords ??= new ExtendedList<IFormLinkGetter<IKeywordGetter>>();
+          modifiedEffect.Keywords.Add(kiEnergyDurationKeyword);
+          modifiedEffect.Archetype = new MagicEffectArchetype(MagicEffectArchetype.TypeEnum.Script);
+        }
+        
+      }
+      
       foreach (var ingestibleGetter in state.LoadOrder.PriorityOrder.WinningOverrides<IIngestibleGetter>())
       {
         if (ingestibleGetter == null || ingestibleGetter.IsDeleted || ingestibleGetter.Effects.Count <= 0)
