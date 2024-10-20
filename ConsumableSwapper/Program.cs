@@ -596,7 +596,7 @@ public static class Program
           SynthesisLog(
             $"Patch CarryWeight magic effect Ki Duration: {magicEffectGetter?.EditorID}");
           var modifiedEffect = state.PatchMod.MagicEffects.GetOrAddAsOverride(magicEffectGetter);
-          modifiedEffect.BaseCost *= 2.0f;
+          modifiedEffect.BaseCost *= 10.0f;
           modifiedEffect.Keywords ??= new ExtendedList<IFormLinkGetter<IKeywordGetter>>();
           modifiedEffect.Keywords.Add(kiEnergyDurationKeyword);
           modifiedEffect.Archetype = new MagicEffectArchetype(MagicEffectArchetype.TypeEnum.Script);
