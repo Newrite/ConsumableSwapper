@@ -52,6 +52,10 @@ public static class Program
     var skyrimEsm = "Skyrim.esm";
     var dragonbornEsm = "Dragonborn.esm";
     var apothecaryEsp = "Apothecary.esp";
+    var reSimonrimEsp = "RESimonrim.esp";
+
+    var kiEnergyDurationKeyword =
+      state.LinkCache.Resolve<IKeywordGetter>(new FormKey(ModKey.FromNameAndExtension(reSimonrimEsp), 0x951));
 
     var ingestibles = new List<IIngestibleGetter[]>
     {
@@ -740,6 +744,55 @@ public static class Program
               $"Swap forms: {container.Items[j].Item?.Item.FormKey} | {listIngestible[i].EditorID} to {listIngestible[0].EditorID}");
             var modifiedContainer = state.PatchMod.Containers.GetOrAddAsOverride(container);
             modifiedContainer.Items?[j].Item.Item.SetTo(listIngestible[0]);
+          }
+        }
+      }
+    }
+
+    if (kiEnergyDurationKeyword != null)
+    {
+      foreach (var ingestibleGetter in state.LoadOrder.PriorityOrder.WinningOverrides<IIngestibleGetter>())
+      {
+        if (ingestibleGetter == null || ingestibleGetter.IsDeleted || ingestibleGetter.Effects.Count <= 0)
+        {
+          continue;
+        }
+
+        for (int i = 0; i < ingestibleGetter.Effects.Count; i++)
+        {
+
+          var hasKeyword = ingestibleGetter?.Effects[i]?.BaseEffect?.Resolve(state.LinkCache)
+            ?.HasKeyword(kiEnergyDurationKeyword);
+          
+          if (hasKeyword.HasValue && hasKeyword.Value)
+          {
+            SynthesisLog(
+              $"Ingestible Ki Duration Patch: {ingestibleGetter?.EditorID}");
+            var modifiedIngestible = state.PatchMod.Ingestibles.GetOrAddAsOverride(ingestibleGetter);
+            modifiedIngestible.Effects[i].Data!.Magnitude *= 0.1f;
+          }
+        }
+        
+        foreach (var ench in state.LoadOrder.PriorityOrder.WinningOverrides<IObjectEffect>())
+        {
+          if (ench == null || ench.IsDeleted || ench.Effects.Count <= 0)
+          {
+            continue;
+          }
+
+          for (int i = 0; i < ench.Effects.Count; i++)
+          {
+
+            var hasKeyword = ench?.Effects[i]?.BaseEffect?.Resolve(state.LinkCache)
+              ?.HasKeyword(kiEnergyDurationKeyword);
+          
+            if (hasKeyword.HasValue && hasKeyword.Value)
+            {
+              SynthesisLog(
+                $"Ench Ki Duration Patch: {ench?.EditorID}");
+              var modifiedEnch = state.PatchMod.ObjectEffects.GetOrAddAsOverride(ench);
+              modifiedEnch.Effects[i].Data!.Magnitude *= 0.1f;
+            }
           }
         }
       }
