@@ -597,9 +597,15 @@ public static class Program
           modifiedEffect.Keywords ??= new ExtendedList<IFormLinkGetter<IKeywordGetter>>();
           modifiedEffect.Keywords.Add(kiEnergyDurationKeyword);
           modifiedEffect.Archetype = new MagicEffectArchetype(MagicEffectArchetype.TypeEnum.Script);
-          modifiedEffect.Flags |= MagicEffect.Flag.Detrimental;
+          if ((modifiedEffect.Flags & MagicEffect.Flag.Detrimental) == 0)
+          {
+            modifiedEffect.Flags |= MagicEffect.Flag.Detrimental;
+          }
+          else
+          {
+            modifiedEffect.Flags &= ~MagicEffect.Flag.Detrimental;
+          }
           // modifiedEffect.Flags.SetFlag(MagicEffect.Flag.Detrimental, false);
-          
         }
       }
 
