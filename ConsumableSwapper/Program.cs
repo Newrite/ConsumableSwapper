@@ -628,7 +628,7 @@ public static class Program
 
         if (overriden)
         {
-          state.LoadOrder.Set(modifiedIngestible);
+          state.PatchMod.Ingestibles.Set(modifiedIngestible);
         }
       }
 
