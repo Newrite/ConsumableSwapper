@@ -770,6 +770,7 @@ public static class Program
           modifiedEffect.Keywords ??= new ExtendedList<IFormLinkGetter<IKeywordGetter>>();
           modifiedEffect.Keywords.Add(kiEnergyDurationKeyword);
           modifiedEffect.Archetype = new MagicEffectArchetype(MagicEffectArchetype.TypeEnum.Script);
+          modifiedEffect.Flags.SetFlag(MagicEffect.Flag.Detrimental, true);
         }
         
       }
@@ -794,7 +795,8 @@ public static class Program
             SynthesisLog(
               $"Ingestible Ki Duration Patch: {ingestibleGetter?.EditorID}");
             var modifiedIngestible = state.PatchMod.Ingestibles.GetOrAddAsOverride(ingestibleGetter);
-            modifiedIngestible.Effects[i].Data!.Magnitude *= 0.1f;
+            var magnitude = modifiedIngestible.Effects[i].Data!.Magnitude;
+            modifiedIngestible.Effects[i].Data!.Magnitude = magnitude / 10.0f;
           }
         }
         
@@ -816,7 +818,32 @@ public static class Program
               SynthesisLog(
                 $"Ench Ki Duration Patch: {ench?.EditorID}");
               var modifiedEnch = state.PatchMod.ObjectEffects.GetOrAddAsOverride(ench);
-              modifiedEnch.Effects[i].Data!.Magnitude *= 0.1f;
+              var magnitude = modifiedEnch.Effects[i].Data!.Magnitude;
+              modifiedEnch.Effects[i].Data!.Magnitude = magnitude / 10.0f;
+            }
+          }
+        }
+        
+        foreach (var spell in state.LoadOrder.PriorityOrder.WinningOverrides<ISpellGetter>())
+        {
+          if (spell == null || spell.IsDeleted || spell.Effects.Count <= 0)
+          {
+            continue;
+          }
+
+          for (int i = 0; i < spell.Effects.Count; i++)
+          {
+
+            var hasKeyword = spell?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
+              ?.HasKeyword(kiEnergyDurationKeyword);
+          
+            if (hasKeyword.HasValue && hasKeyword.Value)
+            {
+              SynthesisLog(
+                $"Spell Ki Duration Patch: {spell?.EditorID}");
+              var modifiedSpell = state.PatchMod.Spells.GetOrAddAsOverride(spell);
+              var magnitude = modifiedSpell.Effects[i].Data!.Magnitude;
+              modifiedSpell.Effects[i].Data!.Magnitude = magnitude / 10.0f;
             }
           }
         }
