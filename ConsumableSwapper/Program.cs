@@ -834,6 +834,7 @@ public static class Program
 
             if (hasKeyword.HasValue && hasKeyword.Value)
             {
+              SynthesisLog($"OldMagnitude: {spell.Effects[i].Data!.Magnitude}");
               var modifiedSpell = state.PatchMod.Spells.GetOrAddAsOverride(spell);
               SynthesisLog($"MagnitudeOne: {modifiedSpell.Effects[i].Data.Magnitude} MagnitudeTwo: {modifiedSpell.Effects[i].Data!.Magnitude}");
               var magnitude = modifiedSpell.Effects[i].Data.Magnitude / 10.0f;
