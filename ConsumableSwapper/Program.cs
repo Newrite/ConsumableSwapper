@@ -773,7 +773,7 @@ public static class Program
           }
         }
         
-        foreach (var ench in state.LoadOrder.PriorityOrder.WinningOverrides<IObjectEffect>())
+        foreach (var ench in state.LoadOrder.PriorityOrder.WinningOverrides<IObjectEffectGetter>())
         {
           if (ench == null || ench.IsDeleted || ench.Effects.Count <= 0)
           {
