@@ -796,62 +796,63 @@ public static class Program
             modifiedIngestible.Effects[i].Data!.Magnitude = magnitude;
           }
         }
+      }
 
-        foreach (var ench in state.LoadOrder.PriorityOrder.WinningOverrides<IObjectEffectGetter>())
+      foreach (var ench in state.LoadOrder.PriorityOrder.WinningOverrides<IObjectEffectGetter>())
+      {
+        if (ench == null || ench.IsDeleted || ench.Effects.Count <= 0)
         {
-          if (ench == null || ench.IsDeleted || ench.Effects.Count <= 0)
+          continue;
+        }
+
+        for (int i = 0; i < ench.Effects.Count; i++)
+        {
+          var hasKeyword = ench?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
+            ?.HasKeyword(kiEnergyDurationKeyword);
+
+          if (hasKeyword.HasValue && hasKeyword.Value)
           {
-            continue;
+            var modifiedEnch = state.PatchMod.ObjectEffects.GetOrAddAsOverride(ench);
+            var magnitude = modifiedEnch.Effects[i].Data!.Magnitude / 10.0f;
+            SynthesisLog(
+              $"Ench Ki Duration Patch: {ench?.EditorID} new magnitude: {magnitude}");
+            modifiedEnch.Effects[i].Data!.Magnitude = magnitude;
           }
+        }
+      }
 
-          for (int i = 0; i < ench.Effects.Count; i++)
+      foreach (var spell in state.LoadOrder.PriorityOrder.WinningOverrides<ISpellGetter>())
+      {
+        if (spell == null || spell.IsDeleted || spell.Effects.Count <= 0)
+        {
+          continue;
+        }
+
+        var modifiedSpell = spell.DeepCopy();
+        bool overriden = false;
+
+        for (int i = 0; i < spell.Effects.Count; i++)
+        {
+          var hasKeyword = spell?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
+            ?.HasKeyword(kiEnergyDurationKeyword);
+
+          if (hasKeyword.HasValue && hasKeyword.Value)
           {
-            var hasKeyword = ench?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
-              ?.HasKeyword(kiEnergyDurationKeyword);
-
-            if (hasKeyword.HasValue && hasKeyword.Value)
-            {
-              var modifiedEnch = state.PatchMod.ObjectEffects.GetOrAddAsOverride(ench);
-              var magnitude = modifiedEnch.Effects[i].Data!.Magnitude / 10.0f;
-              SynthesisLog(
-                $"Ench Ki Duration Patch: {ench?.EditorID} new magnitude: {magnitude}");
-              modifiedEnch.Effects[i].Data!.Magnitude = magnitude;
-            }
+            overriden = true;
+            SynthesisLog($"OldMagnitude: {spell.Effects[i].Data!.Magnitude}");
+            // var modifiedSpell = state.PatchMod.Spells.GetOrAddAsOverride(spell);
+            SynthesisLog(
+              $"MagnitudeOne: {modifiedSpell.Effects[i].Data.Magnitude} MagnitudeTwo: {modifiedSpell.Effects[i].Data!.Magnitude}");
+            var magnitude = modifiedSpell.Effects[i].Data.Magnitude / 10.0f;
+            SynthesisLog(
+              $"Spell Ki Duration Patch: {spell?.EditorID} new magnitude: {magnitude}");
+            modifiedSpell.Effects[i].Data!.Magnitude = magnitude;
           }
         }
 
-        foreach (var spell in state.LoadOrder.PriorityOrder.WinningOverrides<ISpellGetter>())
+        if (overriden)
         {
-          if (spell == null || spell.IsDeleted || spell.Effects.Count <= 0)
-          {
-            continue;
-          }
-          
-          var modifiedSpell = spell.DeepCopy();
-          bool overriden = false;
-
-          for (int i = 0; i < spell.Effects.Count; i++)
-          {
-            var hasKeyword = spell?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
-              ?.HasKeyword(kiEnergyDurationKeyword);
-
-            if (hasKeyword.HasValue && hasKeyword.Value)
-            {
-              overriden = true;
-              SynthesisLog($"OldMagnitude: {spell.Effects[i].Data!.Magnitude}");
-              // var modifiedSpell = state.PatchMod.Spells.GetOrAddAsOverride(spell);
-              SynthesisLog($"MagnitudeOne: {modifiedSpell.Effects[i].Data.Magnitude} MagnitudeTwo: {modifiedSpell.Effects[i].Data!.Magnitude}");
-              var magnitude = modifiedSpell.Effects[i].Data.Magnitude / 10.0f;
-              SynthesisLog(
-                $"Spell Ki Duration Patch: {spell?.EditorID} new magnitude: {magnitude}");
-              modifiedSpell.Effects[i].Data!.Magnitude = magnitude;
-            }
-          }
-
-          if (overriden)
-          {
-            state.PatchMod.Spells.Set(modifiedSpell);
-          }
+          state.PatchMod.Spells.Set(modifiedSpell);
         }
       }
     }
