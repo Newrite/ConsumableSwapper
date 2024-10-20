@@ -773,18 +773,20 @@ public static class Program
         }
         
       }
+
+      var loadOrderLinkCache = state.LoadOrder.ToImmutableLinkCache();
       
       foreach (var ingestibleGetter in state.LoadOrder.PriorityOrder.WinningOverrides<IIngestibleGetter>())
       {
         if (ingestibleGetter == null || ingestibleGetter.IsDeleted || ingestibleGetter.Effects.Count <= 0)
         {
-          continue;
+          continue;   
         }
 
         for (int i = 0; i < ingestibleGetter.Effects.Count; i++)
         {
 
-          var hasKeyword = ingestibleGetter?.Effects[i]?.BaseEffect?.Resolve(state.LinkCache)
+          var hasKeyword = ingestibleGetter?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
             ?.HasKeyword(kiEnergyDurationKeyword);
           
           if (hasKeyword.HasValue && hasKeyword.Value)
@@ -806,7 +808,7 @@ public static class Program
           for (int i = 0; i < ench.Effects.Count; i++)
           {
 
-            var hasKeyword = ench?.Effects[i]?.BaseEffect?.Resolve(state.LinkCache)
+            var hasKeyword = ench?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
               ?.HasKeyword(kiEnergyDurationKeyword);
           
             if (hasKeyword.HasValue && hasKeyword.Value)
