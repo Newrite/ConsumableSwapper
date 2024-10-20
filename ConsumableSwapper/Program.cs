@@ -826,6 +826,9 @@ public static class Program
           {
             continue;
           }
+          
+          var modifiedSpell = spell.DeepCopy();
+          bool overriden = false;
 
           for (int i = 0; i < spell.Effects.Count; i++)
           {
@@ -834,14 +837,20 @@ public static class Program
 
             if (hasKeyword.HasValue && hasKeyword.Value)
             {
+              overriden = true;
               SynthesisLog($"OldMagnitude: {spell.Effects[i].Data!.Magnitude}");
-              var modifiedSpell = state.PatchMod.Spells.GetOrAddAsOverride(spell);
+              // var modifiedSpell = state.PatchMod.Spells.GetOrAddAsOverride(spell);
               SynthesisLog($"MagnitudeOne: {modifiedSpell.Effects[i].Data.Magnitude} MagnitudeTwo: {modifiedSpell.Effects[i].Data!.Magnitude}");
               var magnitude = modifiedSpell.Effects[i].Data.Magnitude / 10.0f;
               SynthesisLog(
                 $"Spell Ki Duration Patch: {spell?.EditorID} new magnitude: {magnitude}");
               modifiedSpell.Effects[i].Data!.Magnitude = magnitude;
             }
+          }
+
+          if (overriden)
+          {
+            state.PatchMod.Spells.Set(modifiedSpell);
           }
         }
       }
