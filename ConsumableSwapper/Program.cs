@@ -923,7 +923,7 @@ public static class Program
                     if (hasKeyword.HasValue && hasKeyword.Value)
                     {
                         var modifiedEnch = state.PatchMod.ObjectEffects.GetOrAddAsOverride(ench);
-                        var magnitude = (modifiedEnch.Effects[i].Data!.Magnitude / 10.0f) * 2.0f;
+                        var magnitude = (modifiedEnch.Effects[i].Data!.Magnitude / 10.0f); // * 2.0f;
                         SynthesisLog(
                             $"Ench Ki Duration Patch: {ench?.EditorID} new magnitude: {magnitude}");
                         modifiedEnch.Effects[i].Data!.Magnitude = magnitude;
@@ -949,7 +949,7 @@ public static class Program
                     if (hasKeyword.HasValue && hasKeyword.Value)
                     {
                         overriden = true;
-                        var magnitude = (modifiedSpell.Effects[i].Data.Magnitude / 10.0f) * 2.0f;
+                        var magnitude = (modifiedSpell.Effects[i].Data.Magnitude / 10.0f); //* 2.0f;
                         SynthesisLog(
                             $"Spell Ki Duration Patch: {spell?.EditorID} new magnitude: {magnitude}");
                         modifiedSpell.Effects[i].Data!.Magnitude = magnitude;
