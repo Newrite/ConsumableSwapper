@@ -877,36 +877,36 @@ public static class Program
                 }
             }
 
-            foreach (var ingestibleGetter in state.LoadOrder.PriorityOrder.WinningOverrides<IIngestibleGetter>())
-            {
-                if (ingestibleGetter == null || ingestibleGetter.IsDeleted || ingestibleGetter.Effects.Count <= 0)
-                {
-                    continue;
-                }
-
-                var modifiedIngestible = ingestibleGetter.DeepCopy();
-                bool overriden = false;
-
-                for (int i = 0; i < modifiedIngestible.Effects.Count; i++)
-                {
-                    var hasKeyword = modifiedIngestible?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
-                        ?.HasKeyword(kiEnergyDurationKeyword);
-
-                    if (hasKeyword.HasValue && hasKeyword.Value)
-                    {
-                        overriden = true;
-                        var magnitude = modifiedIngestible.Effects[i].Data!.Magnitude / 10.0f;
-                        SynthesisLog(
-                            $"Ingestible Ki Duration Patch: {modifiedIngestible?.EditorID} new magnitude: {magnitude}");
-                        modifiedIngestible.Effects[i].Data!.Magnitude = magnitude;
-                    }
-                }
-
-                if (overriden)
-                {
-                    state.PatchMod.Ingestibles.Set(modifiedIngestible);
-                }
-            }
+            // foreach (var ingestibleGetter in state.LoadOrder.PriorityOrder.WinningOverrides<IIngestibleGetter>())
+            // {
+            //     if (ingestibleGetter == null || ingestibleGetter.IsDeleted || ingestibleGetter.Effects.Count <= 0)
+            //     {
+            //         continue;
+            //     }
+// 
+            //     var modifiedIngestible = ingestibleGetter.DeepCopy();
+            //     bool overriden = false;
+// 
+            //     for (int i = 0; i < modifiedIngestible.Effects.Count; i++)
+            //     {
+            //         var hasKeyword = modifiedIngestible?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
+            //             ?.HasKeyword(kiEnergyDurationKeyword);
+// 
+            //         if (hasKeyword.HasValue && hasKeyword.Value)
+            //         {
+            //             overriden = true;
+            //             var magnitude = modifiedIngestible.Effects[i].Data!.Magnitude / 10.0f;
+            //             SynthesisLog(
+            //                 $"Ingestible Ki Duration Patch: {modifiedIngestible?.EditorID} new magnitude: {magnitude}");
+            //             modifiedIngestible.Effects[i].Data!.Magnitude = magnitude;
+            //         }
+            //     }
+// 
+            //     if (overriden)
+            //     {
+            //         state.PatchMod.Ingestibles.Set(modifiedIngestible);
+            //     }
+            // }
 
             // foreach (var ench in state.LoadOrder.PriorityOrder.WinningOverrides<IObjectEffectGetter>())
             // {
