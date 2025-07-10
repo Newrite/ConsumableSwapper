@@ -1186,7 +1186,7 @@ public static class Program
             //     modifiedNpc.Configuration.CalcMinLevel = minLevel;
             //     modifiedNpc.Configuration.CalcMaxLevel = maxLevel;
             // }
-        }
+        // }
 
         SynthesisLog("Done patching consum swapper!", true);
     }
