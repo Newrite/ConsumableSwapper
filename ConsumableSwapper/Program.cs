@@ -861,18 +861,18 @@ public static class Program
                     SynthesisLog(
                         $"Patch CarryWeight magic effect Ki Duration: {magicEffectGetter?.EditorID}");
                     var modifiedEffect = state.PatchMod.MagicEffects.GetOrAddAsOverride(magicEffectGetter);
-                    modifiedEffect.BaseCost *= 10.0f;
+                    // modifiedEffect.BaseCost *= 10.0f;
                     modifiedEffect.Keywords ??= new ExtendedList<IFormLinkGetter<IKeywordGetter>>();
                     modifiedEffect.Keywords.Add(kiEnergyDurationKeyword);
                     modifiedEffect.Archetype = new MagicEffectArchetype(MagicEffectArchetype.TypeEnum.Script);
-                    if ((modifiedEffect.Flags & MagicEffect.Flag.Detrimental) == 0)
-                    {
-                        modifiedEffect.Flags |= MagicEffect.Flag.Detrimental;
-                    }
-                    else
-                    {
-                        modifiedEffect.Flags &= ~MagicEffect.Flag.Detrimental;
-                    }
+                    // if ((modifiedEffect.Flags & MagicEffect.Flag.Detrimental) == 0)
+                    // {
+                    //     modifiedEffect.Flags |= MagicEffect.Flag.Detrimental;
+                    // }
+                    // else
+                    // {
+                    //     modifiedEffect.Flags &= ~MagicEffect.Flag.Detrimental;
+                    // }
                     // modifiedEffect.Flags.SetFlag(MagicEffect.Flag.Detrimental, false);
                 }
             }
@@ -908,59 +908,59 @@ public static class Program
                 }
             }
 
-            foreach (var ench in state.LoadOrder.PriorityOrder.WinningOverrides<IObjectEffectGetter>())
-            {
-                if (ench == null || ench.IsDeleted || ench.Effects.Count <= 0)
-                {
-                    continue;
-                }
+            // foreach (var ench in state.LoadOrder.PriorityOrder.WinningOverrides<IObjectEffectGetter>())
+            // {
+            //     if (ench == null || ench.IsDeleted || ench.Effects.Count <= 0)
+            //     {
+            //         continue;
+            //     }
+// 
+            //     for (int i = 0; i < ench.Effects.Count; i++)
+            //     {
+            //         var hasKeyword = ench?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
+            //             ?.HasKeyword(kiEnergyDurationKeyword);
+// 
+            //         if (hasKeyword.HasValue && hasKeyword.Value)
+            //         {
+            //             var modifiedEnch = state.PatchMod.ObjectEffects.GetOrAddAsOverride(ench);
+            //             var magnitude = (modifiedEnch.Effects[i].Data!.Magnitude / 10.0f); // * 2.0f;
+            //             SynthesisLog(
+            //                 $"Ench Ki Duration Patch: {ench?.EditorID} new magnitude: {magnitude}");
+            //             modifiedEnch.Effects[i].Data!.Magnitude = magnitude;
+            //         }
+            //     }
+            // }
 
-                for (int i = 0; i < ench.Effects.Count; i++)
-                {
-                    var hasKeyword = ench?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
-                        ?.HasKeyword(kiEnergyDurationKeyword);
-
-                    if (hasKeyword.HasValue && hasKeyword.Value)
-                    {
-                        var modifiedEnch = state.PatchMod.ObjectEffects.GetOrAddAsOverride(ench);
-                        var magnitude = (modifiedEnch.Effects[i].Data!.Magnitude / 10.0f); // * 2.0f;
-                        SynthesisLog(
-                            $"Ench Ki Duration Patch: {ench?.EditorID} new magnitude: {magnitude}");
-                        modifiedEnch.Effects[i].Data!.Magnitude = magnitude;
-                    }
-                }
-            }
-
-            foreach (var spell in state.LoadOrder.PriorityOrder.WinningOverrides<ISpellGetter>())
-            {
-                if (spell == null || spell.IsDeleted || spell.Effects.Count <= 0)
-                {
-                    continue;
-                }
-
-                var modifiedSpell = spell.DeepCopy();
-                bool overriden = false;
-
-                for (int i = 0; i < spell.Effects.Count; i++)
-                {
-                    var hasKeyword = spell?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
-                        ?.HasKeyword(kiEnergyDurationKeyword);
-
-                    if (hasKeyword.HasValue && hasKeyword.Value)
-                    {
-                        overriden = true;
-                        var magnitude = (modifiedSpell.Effects[i].Data.Magnitude / 10.0f); //* 2.0f;
-                        SynthesisLog(
-                            $"Spell Ki Duration Patch: {spell?.EditorID} new magnitude: {magnitude}");
-                        modifiedSpell.Effects[i].Data!.Magnitude = magnitude;
-                    }
-                }
-
-                if (overriden)
-                {
-                    state.PatchMod.Spells.Set(modifiedSpell);
-                }
-            }
+            // foreach (var spell in state.LoadOrder.PriorityOrder.WinningOverrides<ISpellGetter>())
+            // {
+            //     if (spell == null || spell.IsDeleted || spell.Effects.Count <= 0)
+            //     {
+            //         continue;
+            //     }
+// 
+            //     var modifiedSpell = spell.DeepCopy();
+            //     bool overriden = false;
+// 
+            //     for (int i = 0; i < spell.Effects.Count; i++)
+            //     {
+            //         var hasKeyword = spell?.Effects[i]?.BaseEffect?.TryResolve(loadOrderLinkCache)
+            //             ?.HasKeyword(kiEnergyDurationKeyword);
+// 
+            //         if (hasKeyword.HasValue && hasKeyword.Value)
+            //         {
+            //             overriden = true;
+            //             var magnitude = (modifiedSpell.Effects[i].Data.Magnitude / 10.0f); //* 2.0f;
+            //             SynthesisLog(
+            //                 $"Spell Ki Duration Patch: {spell?.EditorID} new magnitude: {magnitude}");
+            //             modifiedSpell.Effects[i].Data!.Magnitude = magnitude;
+            //         }
+            //     }
+// 
+            //     if (overriden)
+            //     {
+            //         state.PatchMod.Spells.Set(modifiedSpell);
+            //     }
+            // }
         }
 
 
