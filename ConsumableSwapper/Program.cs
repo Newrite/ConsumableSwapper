@@ -1173,18 +1173,18 @@ public static class Program
                 }
             }
 
-            var staticlevel = npc.Configuration.Level as NpcLevel;
-            if (staticlevel != null)
-            {
-                var currentLevel = staticlevel.Level;
-                var minLevel = currentLevel;
-                var maxLevel = (short)(minLevel * 2.5f);
-                var modifiedNpc = state.PatchMod.Npcs.GetOrAddAsOverride(npc);
-                var levelMult = (modifiedNpc.Configuration.Flags & NpcConfiguration.Flag.Unique) != 0 ? 1.5f : 1.0f;
-                modifiedNpc.Configuration.Level = new PcLevelMult() { LevelMult = levelMult };
-                modifiedNpc.Configuration.CalcMinLevel = minLevel;
-                modifiedNpc.Configuration.CalcMaxLevel = maxLevel;
-            }
+            // var staticlevel = npc.Configuration.Level as NpcLevel;
+            // if (staticlevel != null)
+            // {
+            //     var currentLevel = staticlevel.Level;
+            //     var minLevel = currentLevel;
+            //     var maxLevel = (short)(minLevel * 2.5f);
+            //     var modifiedNpc = state.PatchMod.Npcs.GetOrAddAsOverride(npc);
+            //     var levelMult = (modifiedNpc.Configuration.Flags & NpcConfiguration.Flag.Unique) != 0 ? 1.5f : 1.0f;
+            //     modifiedNpc.Configuration.Level = new PcLevelMult() { LevelMult = levelMult };
+            //     modifiedNpc.Configuration.CalcMinLevel = minLevel;
+            //     modifiedNpc.Configuration.CalcMaxLevel = maxLevel;
+            // }
         }
 
         SynthesisLog("Done patching consum swapper!", true);
