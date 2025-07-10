@@ -1147,26 +1147,44 @@ public static class Program
             }
 
             var pclevelmult = npc.Configuration.Level as PcLevelMult;
-            if (pclevelmult == null)
+            if (pclevelmult != null)
             {
-                continue;
+                // if (pclevelmult.LevelMult > 1.0f && npc.Configuration.CalcMinLevel <= 30) continue;
+                // if (npc.Configuration.CalcMinLevel <= 30) continue;
+                if (pclevelmult.LevelMult < 1.5f || npc.Configuration.CalcMinLevel <= 30)
+                {
+                    var modifiedNpc = state.PatchMod.Npcs.GetOrAddAsOverride(npc);
+                    var levelMult = (modifiedNpc.Configuration.Flags & NpcConfiguration.Flag.Unique) != 0 ? 1.5f : 1.0f;
+                    if (pclevelmult.LevelMult < levelMult)
+                    {
+                        modifiedNpc.Configuration.Level = new PcLevelMult() { LevelMult = levelMult };
+                    }
+
+                    if (npc.Configuration.CalcMinLevel > 30)
+                    {
+                        var result = (short)(npc.Configuration.CalcMinLevel / 2);
+                        if (result < 25)
+                        {
+                            result = 25;
+                        }
+
+                        modifiedNpc.Configuration.CalcMinLevel = result;
+                    }
+                }
             }
 
-            if (!(pclevelmult.LevelMult > 1.5f) && npc.Configuration.CalcMinLevel <= 30) continue;
-            var modifiedNpc = state.PatchMod.Npcs.GetOrAddAsOverride(npc);
-            if (pclevelmult.LevelMult > 1.5f)
+            var staticlevel = npc.Configuration.Level as NpcLevel;
+            if (staticlevel != null)
             {
-                modifiedNpc.Configuration.Level = new PcLevelMult() { LevelMult = 1.5f };
+                var currentLevel = staticlevel.Level;
+                var minLevel = currentLevel;
+                var maxLevel = (short)(minLevel * 2.5f);
+                var modifiedNpc = state.PatchMod.Npcs.GetOrAddAsOverride(npc);
+                var levelMult = (modifiedNpc.Configuration.Flags & NpcConfiguration.Flag.Unique) != 0 ? 1.5f : 1.0f;
+                modifiedNpc.Configuration.Level = new PcLevelMult() { LevelMult = levelMult };
+                modifiedNpc.Configuration.CalcMinLevel = minLevel;
+                modifiedNpc.Configuration.CalcMaxLevel = maxLevel;
             }
-
-            if (npc.Configuration.CalcMinLevel <= 30) continue;
-            var result = (short)(npc.Configuration.CalcMinLevel / 2);
-            if (result < 25)
-            {
-                result = 25;
-            }
-            modifiedNpc.Configuration.CalcMinLevel = result;
-
         }
 
         SynthesisLog("Done patching consum swapper!", true);
