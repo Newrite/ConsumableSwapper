@@ -1138,7 +1138,31 @@ public static class Program
         }
 
         SynthesisLog(
-            "Start patch NPCs", true);
+            "Start patch EncounterZone", true);
+        foreach (var encounterZone in state.LoadOrder.PriorityOrder.WinningOverrides<IEncounterZoneGetter>())
+        {
+            if (encounterZone.IsDeleted)
+            {
+                continue;
+            }
+
+            if (encounterZone.MaxLevel > 0 || encounterZone.MinLevel > 15)
+            {
+                var modifiedEncounterZone = state.PatchMod.EncounterZones.GetOrAddAsOverride(encounterZone);
+                if (modifiedEncounterZone.MaxLevel > 0)
+                {
+                    modifiedEncounterZone.MaxLevel = 0;
+                }
+
+                if (modifiedEncounterZone.MinLevel > 15)
+                {
+                    modifiedEncounterZone.MinLevel = 15;
+                }
+            }
+        }
+
+        // SynthesisLog(
+        //     "Start patch NPCs", true);
         // foreach (var npc in state.LoadOrder.PriorityOrder.WinningOverrides<INpcGetter>())
         // {
         //     if (npc.IsDeleted)
